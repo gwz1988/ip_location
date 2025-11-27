@@ -1,0 +1,412 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    background: #f0f2f5;
+    min-height: 100vh;
+    padding: 20px;
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+/* 头部样式 */
+header {
+    text-align: center;
+    background: white;
+    padding: 30px 20px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+header h1 {
+    font-size: 2em;
+    color: #1877f2;
+    margin-bottom: 8px;
+    font-weight: 600;
+    letter-spacing: -0.5px;
+}
+
+.subtitle {
+    font-size: 0.95em;
+    color: #65676b;
+    font-weight: 400;
+}
+
+/* 搜索区域 */
+.search-section {
+    background: white;
+    border-radius: 8px;
+    padding: 24px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.search-box {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 16px;
+}
+
+#ipInput {
+    flex: 1;
+    padding: 10px 12px;
+    font-size: 15px;
+    border: 1px solid #dddfe2;
+    border-radius: 6px;
+    outline: none;
+    transition: all 0.2s;
+    background: #f0f2f5;
+    color: #050505;
+}
+
+#ipInput:focus {
+    background: white;
+    border-color: #1877f2;
+    box-shadow: 0 0 0 2px rgba(24, 119, 242, 0.1);
+}
+
+#ipInput::placeholder {
+    color: #8a8d91;
+}
+
+button {
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: 600;
+    background: #1877f2;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+}
+
+button:hover {
+    background: #166fe5;
+}
+
+button:active {
+    background: #1564d6;
+    transform: scale(0.98);
+}
+
+.btn-icon {
+    font-size: 1em;
+}
+
+.quick-actions {
+    display: flex;
+    justify-content: center;
+}
+
+.btn-secondary {
+    background: #e4e6eb;
+    color: #050505;
+}
+
+.btn-secondary:hover {
+    background: #d8dadf;
+}
+
+.btn-secondary:active {
+    background: #ced0d4;
+}
+
+/* 加载动画 */
+.loading {
+    background: white;
+    border-radius: 8px;
+    padding: 32px;
+    text-align: center;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.loading p {
+    color: #1877f2;
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    margin: 0 auto 16px;
+    border: 3px solid #e4e6eb;
+    border-top: 3px solid #1877f2;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* 错误提示 */
+.error {
+    background: #ffebe9;
+    border: 1px solid #f02849;
+    color: #c41c00;
+    padding: 12px 16px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    text-align: center;
+    font-size: 0.9em;
+}
+
+/* IP信息显示 */
+.ip-info {
+    background: white;
+    border-radius: 8px;
+    padding: 24px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    animation: fadeIn 0.3s;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.info-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #e4e6eb;
+}
+
+.info-header h2 {
+    color: #050505;
+    font-size: 1.6em;
+    font-weight: 600;
+}
+
+.ip-type {
+    padding: 6px 12px;
+    background: #e7f3ff;
+    color: #1877f2;
+    border-radius: 6px;
+    font-size: 0.85em;
+    font-weight: 600;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.info-item {
+    padding: 16px;
+    background: #f0f2f5;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    transition: all 0.2s;
+}
+
+.info-item:hover {
+    background: #e4e6eb;
+}
+
+.info-label {
+    font-size: 0.85em;
+    color: #65676b;
+    font-weight: 600;
+}
+
+.info-value {
+    font-size: 1em;
+    color: #050505;
+    font-weight: 500;
+    word-break: break-all;
+}
+
+/* 地图容器 */
+.map-container {
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px solid #e4e6eb;
+}
+
+.map-container h3 {
+    color: #050505;
+    margin-bottom: 12px;
+    font-size: 1.2em;
+    font-weight: 600;
+}
+
+.map-link {
+    padding: 12px;
+    background: #f0f2f5;
+    border-radius: 6px;
+    font-size: 0.9em;
+}
+
+.map-link p {
+    color: #65676b;
+    margin-bottom: 8px;
+}
+
+.map-link a {
+    color: #1877f2;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.map-link a:hover {
+    text-decoration: underline;
+}
+
+/* 使用说明 */
+.instructions {
+    background: white;
+    border-radius: 8px;
+    padding: 24px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.instructions h3 {
+    color: #1877f2;
+    margin-bottom: 16px;
+    font-size: 1.3em;
+    font-weight: 600;
+}
+
+.instructions ul {
+    list-style-position: inside;
+    margin-bottom: 16px;
+    color: #65676b;
+    font-size: 0.9em;
+    line-height: 1.8;
+}
+
+.instructions li {
+    padding: 4px 0;
+    color: #050505;
+}
+
+.api-notice {
+    background: #fff3cd;
+    border: 1px solid #ffc107;
+    padding: 12px;
+    border-radius: 6px;
+    font-size: 0.9em;
+    color: #856404;
+}
+
+.api-notice strong {
+    color: #050505;
+}
+
+.api-notice a {
+    color: #1877f2;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.api-notice a:hover {
+    text-decoration: underline;
+}
+
+/* 页脚 */
+footer {
+    text-align: center;
+    padding: 20px 0;
+    color: #65676b;
+    font-size: 0.85em;
+}
+
+footer p {
+    margin: 4px 0;
+}
+
+footer a {
+    color: #1877f2;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+footer a:hover {
+    text-decoration: underline;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    body {
+        padding: 12px;
+    }
+
+    header {
+        padding: 20px 16px;
+    }
+
+    header h1 {
+        font-size: 1.6em;
+    }
+
+    .search-section {
+        padding: 16px;
+    }
+
+    .search-box {
+        flex-direction: column;
+    }
+
+    button {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .info-header {
+        flex-direction: column;
+        gap: 12px;
+        text-align: center;
+    }
+
+    .instructions {
+        padding: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    header h1 {
+        font-size: 1.4em;
+    }
+
+    .subtitle {
+        font-size: 0.85em;
+    }
+
+    .info-header h2 {
+        font-size: 1.3em;
+    }
+}
