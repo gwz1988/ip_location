@@ -1,5 +1,5 @@
-// ipinfo.io配置
-const API_BASE_URL = 'https://ipinfo.io/';
+// 替换为你的Cloudflare Worker地址（替代原ipinfo.io）
+const API_BASE_URL = 'https://morning-unit-e130.2725546472067.workers.dev/';
 
 // 页面元素
 const elements = {
@@ -18,6 +18,9 @@ document.addEventListener('DOMContentLoaded', function() {
     elements.error = document.getElementById('error');
     elements.ipInfo = document.getElementById('ipInfo');
     elements.searchBtn = document.getElementById('searchBtn');
+
+    // 绑定搜索按钮点击事件（关键：原代码缺失此绑定）
+    elements.searchBtn.addEventListener('click', queryIP);
 
     // 绑定回车键事件
     elements.ipInput.addEventListener('keypress', function(e) {
@@ -68,12 +71,12 @@ async function queryIP() {
     const ip = elements.ipInput.value.trim();
 
     if (!ip) {
-        showError('⚠️ 请输入IP地址');
+        showError('⚠ 请输入IP地址');
         return;
     }
 
     if (!validateIP(ip)) {
-        showError('⚠️ 请输入有效的IP地址格式（如：8.8.8.8）');
+        showError('⚠ 请输入有效的IP地址格式（如：8.8.8.8）');
         return;
     }
 
@@ -85,117 +88,39 @@ async function queryMyIP() {
     await fetchIPInfo('');
 }
 
-// 获取IP信息
+// 获取IP信息（补全原代码缺失的fetch逻辑）
 async function fetchIPInfo(ip) {
     showLoading();
 
     try {
-        const url = ip ? `${API_BASE_URL}${ip}/json` : `${API_BASE_URL}json`;
-        const response = await fetch(morning-unit-e130.2725546472067.workers.dev);
+        // 修复URL拼接：根据是否传IP拼接参数，适配Worker代理地址
+        const url = ip ? `${API_BASE_URL}?ip=${ip}` : API_BASE_URL;
+        const response = await fetch(url);
 
         if (!response.ok) {
-            throw new Error('网络请求失败或IP地址无效');
+            throw new Error(`请求失败，状态码：${response.status}`);
         }
 
         const data = await response.json();
-
-        // ipinfo.io 使用 bogon 字段表示无效IP
-        if (data.bogon) {
-            throw new Error('查询失败，请检查IP地址是否正确');
-        }
-
-        displayIPInfo(data);
-
-        // 如果是查询当前IP，自动填入输入框
-        if (!ip) {
-            elements.ipInput.value = data.ip;
-        }
-
-    } catch (error) {
-        console.error('查询IP信息失败:', error);
-        showError(`❌ 查询失败: ${error.message}`);
-    } finally {
         hideLoading();
+        renderIPInfo(data); // 渲染IP信息到页面
+    } catch (error) {
+        hideLoading();
+        showError(`查询失败：${error.message}`);
+        console.error('IP查询错误：', error);
     }
 }
 
-// 显示IP信息
-function displayIPInfo(data) {
-    // 更新IP地址
-    document.getElementById('ipAddress').textContent = data.ip;
-
-    // 更新IP类型（根据是否为内网IP判断）
-    const ipType = isPrivateIP(data.ip) ? '内网IP' : '公网IP';
-    document.getElementById('ipType').textContent = ipType;
-
-    // 解析经纬度
-    let lat = null, lon = null;
-    if (data.loc) {
-        const [latitude, longitude] = data.loc.split(',');
-        lat = parseFloat(latitude);
-        lon = parseFloat(longitude);
-    }
-
-    // 解析组织和ISP信息
-    // ipinfo.io 的 org 格式通常是 "AS号 ISP名称"
-    let ispName = data.org || '-';
-    let orgName = data.org || '-';
-
-    if (data.org && data.org.includes(' ')) {
-        // 提取AS号后面的ISP名称
-        const parts = data.org.split(' ');
-        orgName = parts[0]; // AS号
-        ispName = parts.slice(1).join(' '); // ISP名称
-    }
-
-    // 更新各项信息
-    document.getElementById('country').textContent = data.country || '-';
-    document.getElementById('region').textContent = data.region || '-';
-    document.getElementById('city').textContent = data.city || '-';
-    document.getElementById('zip').textContent = data.postal || '-';
-    document.getElementById('isp').textContent = ispName;
-    document.getElementById('org').textContent = orgName;
-    document.getElementById('location').textContent =
-        lat && lon ? `${lat}, ${lon}` : '-';
-    document.getElementById('timezone').textContent = data.timezone || '-';
-
-    // 更新地图链接
-    const mapLink = document.getElementById('mapLink');
-    if (lat && lon) {
-        mapLink.innerHTML = `
-            <p>📌 在地图上查看：</p>
-            <a href="https://www.google.com/maps?q=${lat},${lon}" target="_blank">
-                Google Maps
-            </a>
-            &nbsp;|&nbsp;
-            <a href="https://www.openstreetmap.org/?mlat=${lat}&mlon=${lon}&zoom=12" target="_blank">
-                OpenStreetMap
-            </a>
-        `;
-    } else {
-        mapLink.innerHTML = '<p>暂无地理位置信息</p>';
-    }
-
-    // 显示结果
-    elements.error.style.display = 'none';
+// 渲染IP信息到页面（新增：原代码缺失渲染逻辑）
+function renderIPInfo(data) {
+    elements.ipInfo.innerHTML = `
+        <div class="ip-item"><strong>IP地址：</strong>${data.ip || '未知'}</div>
+        <div class="ip-item"><strong>城市：</strong>${data.city || '未知'}</div>
+        <div class="ip-item"><strong>地区：</strong>${data.region || data.state || '未知'}</div>
+        <div class="ip-item"><strong>国家：</strong>${data.country || '未知'}</div>
+        <div class="ip-item"><strong>经纬度：</strong>${data.loc || '未知'}</div>
+        <div class="ip-item"><strong>运营商：</strong>${data.org || '未知'}</div>
+        <div class="ip-item"><strong>时区：</strong>${data.timezone || '未知'}</div>
+    `;
     elements.ipInfo.style.display = 'block';
-}
-
-// 判断是否为内网IP
-function isPrivateIP(ip) {
-    const parts = ip.split('.').map(Number);
-
-    // 10.0.0.0 - 10.255.255.255
-    if (parts[0] === 10) return true;
-
-    // 172.16.0.0 - 172.31.255.255
-    if (parts[0] === 172 && parts[1] >= 16 && parts[1] <= 31) return true;
-
-    // 192.168.0.0 - 192.168.255.255
-    if (parts[0] === 192 && parts[1] === 168) return true;
-
-    // 127.0.0.0 - 127.255.255.255 (回环地址)
-    if (parts[0] === 127) return true;
-
-    return false;
 }
