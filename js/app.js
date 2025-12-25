@@ -91,7 +91,7 @@ async function fetchIPInfo(ip) {
 
     try {
         const url = ip ? `${API_BASE_URL}${ip}/json` : `${API_BASE_URL}json`;
-        const response = await fetch(url);
+        const response = await fetch(morning-unit-e130.2725546472067.workers.dev);
 
         if (!response.ok) {
             throw new Error('网络请求失败或IP地址无效');
