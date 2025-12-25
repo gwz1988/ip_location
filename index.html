@@ -3,86 +3,118 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IP定位查询</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: Arial, sans-serif;
-        }
-        .container {
-            max-width: 800px;
-            margin: 20px auto;
-            padding: 0 20px;
-        }
-        .search-box {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            align-items: center;
-        }
-        #ipInput {
-            flex: 1;
-            padding: 10px;
-            border: 1px solid #e0e0e0;
-            border-radius: 4px;
-            font-size: 16px;
-        }
-        #searchBtn {
-            padding: 10px 20px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-        #myIpBtn {
-            display: block;
-            margin: 0 auto 20px;
-            padding: 8px 16px;
-            background-color: #6c757d;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 14px;
-        }
-        #loading {
-            text-align: center;
-            color: #007bff;
-            display: none;
-            margin-bottom: 10px;
-        }
-        #error {
-            color: #dc3545;
-            margin-bottom: 10px;
-            display: none;
-        }
-        #ipInfo {
-            border: 1px solid #e0e0e0;
-            border-radius: 4px;
-            padding: 20px;
-            display: none;
-        }
-        .ip-item {
-            margin-bottom: 8px;
-            font-size: 16px;
-        }
-    </style>
+    <title>IP归属地查询工具 - 快速查询IP地址归属地信息</title>
+    <meta name="description" content="免费在线IP归属地查询工具，支持查询任意IP地址的国家、地区、城市、运营商等详细信息。">
+    <meta name="keywords" content="IP查询,IP归属地,IP地址查询,IP定位,IP地理位置">
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
     <div class="container">
-        <div class="search-box">
-            <input type="text" id="ipInput" placeholder="输入IP地址查询（如8.8.8.8）">
-            <button id="searchBtn">查询</button>
+        <header>
+            <h1>🌍 IP归属地查询</h1>
+            <p class="subtitle">查询IP地址的详细归属地信息</p>
+        </header>
+
+        <!-- 搜索区域 -->
+        <div class="search-section">
+            <div class="search-box">
+                <input
+                    type="text"
+                    id="ipInput"
+                    placeholder="请输入IP地址（如：8.8.8.8）"
+                    autocomplete="off"
+                >
+                <button id="searchBtn" onclick="queryIP()">
+                    <span class="btn-text">查询</span>
+                    <span class="btn-icon">🔍</span>
+                </button>
+            </div>
+            <div class="quick-actions">
+                <button class="btn-secondary" onclick="queryMyIP()">
+                    <span>📍 查询我的IP</span>
+                </button>
+            </div>
         </div>
-        <button id="myIpBtn">查询我的IP</button>
-        <div id="loading">加载中...</div>
-        <div id="error"></div>
-        <div id="ipInfo"></div>
+
+        <!-- 加载提示 -->
+        <div id="loading" class="loading" style="display: none;">
+            <div class="spinner"></div>
+            <p>正在查询IP信息...</p>
+        </div>
+
+        <!-- 错误提示 -->
+        <div id="error" class="error" style="display: none;"></div>
+
+        <!-- IP信息显示 -->
+        <div id="ipInfo" class="ip-info" style="display: none;">
+            <div class="info-header">
+                <h2 id="ipAddress"></h2>
+                <span id="ipType" class="ip-type"></span>
+            </div>
+            <div class="info-grid">
+                <div class="info-item">
+                    <span class="info-label">🌏 国家/地区</span>
+                    <span class="info-value" id="country"></span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">📍 省份/州</span>
+                    <span class="info-value" id="region"></span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">🏙️ 城市</span>
+                    <span class="info-value" id="city"></span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">📮 邮编</span>
+                    <span class="info-value" id="zip"></span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">🌐 运营商</span>
+                    <span class="info-value" id="isp"></span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">🏢 组织</span>
+                    <span class="info-value" id="org"></span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">📡 经纬度</span>
+                    <span class="info-value" id="location"></span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">⏰ 时区</span>
+                    <span class="info-value" id="timezone"></span>
+                </div>
+            </div>
+
+            <!-- 地图容器 -->
+            <div class="map-container">
+                <h3>🗺️ 地理位置</h3>
+                <div id="mapLink" class="map-link"></div>
+            </div>
+        </div>
+
+        <!-- 使用说明 -->
+        <div class="instructions">
+            <h3>📖 使用说明</h3>
+            <ul>
+                <li>在输入框中输入要查询的IP地址（支持IPv4格式）</li>
+                <li>点击"查询"按钮获取该IP的归属地信息</li>
+                <li>点击"查询我的IP"按钮可以快速查询您当前的IP地址信息</li>
+                <li>查询结果包括：国家、地区、城市、运营商、经纬度、时区等详细信息</li>
+                <li>支持查看IP地理位置的地图链接</li>
+            </ul>
+            <div class="api-notice">
+                <strong>提示：</strong>本工具使用免费API服务，查询结果仅供参考。
+            </div>
+        </div>
+
+        <!-- 页脚 -->
+        <footer>
+            <p>数据来源：<a href="https://ipinfo.io" target="_blank">IPinfo.io</a></p>
+            <p>© 2025 IP归属地查询工具</p>
+        </footer>
     </div>
-    <script src="js/main.js"></script>
+
+    <script src="js/app.js"></script>
 </body>
 </html>
