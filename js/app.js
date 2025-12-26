@@ -1,5 +1,5 @@
 // 替换为你的Cloudflare Worker地址
-const API_BASE_URL = 'https://luyou.gg71359260.de5.net/';
+const API_BASE_URL = 'https://morning-unit-e130.2725546472067.workers.dev/';
 
 // 页面元素
 const elements = {
